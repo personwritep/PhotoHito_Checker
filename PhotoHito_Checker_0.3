@@ -12,6 +12,11 @@
 
 
 
+let ua=0; // Chromeの場合のフラグ
+let agent=window.navigator.userAgent.toLowerCase();
+if(agent.indexOf('firefox') > -1){ ua=1; } // Firefoxの場合のフラグ
+
+
 let path=location.pathname;
 if(path.match(/\/photo\/\d{1,8}\/$/)){ //「ユーザー別写真リスト」の画面
 
@@ -21,7 +26,9 @@ if(path.match(/\/photo\/\d{1,8}\/$/)){ //「ユーザー別写真リスト」の
 
 
     let check_set=document.querySelector('#check_set');
-    if(get_cookie('PHC')!=0){
+    if(get_cookie('PHC')==0){
+        document.cookie='PHC=25; path=/; Max-Age=86400'; } // 24h 🔵
+    else{
         check_set.value=get_cookie('PHC'); // Cookieの読込み 🔵
 
 
@@ -62,7 +69,7 @@ if(path.match(/\/photo\/\d{1,8}\/$/)){ //「ユーザー別写真リスト」の
                     input_wrap.style.color='#fff';
                     input_wrap.style.background='red'; }}}
 
-    } //  if(get_cookie('PHC')!=0)
+    } //  else{}
 
 
 
@@ -112,7 +119,10 @@ if(path.match(/\/photo\/\d{1,8}\/$/)){ //「ユーザー別写真リスト」の
         if(!document.querySelector('#abox')){
             let login_menu=document.querySelector('#login_menu');
             if(login_menu){
-                login_menu.insertAdjacentHTML('beforebegin', abox); }}}
+                login_menu.insertAdjacentHTML('beforebegin', abox);
+                if(ua==1){
+                    let style='<style>#check_set { padding: 2px 24px 0 0; }</style>';
+                    login_menu.insertAdjacentHTML('beforebegin', style); }}}}
 
 
 
@@ -149,6 +159,4 @@ if(path.match(/\/photo\/\d{1,8}\/$/)){ //「ユーザー別写真リスト」の
             window.open(url, '_blank'); }}
 
 } //「ユーザー別写真リスト」の画面
-
-
 
