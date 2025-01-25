@@ -8,8 +8,8 @@
 // @exclude        https://photohito.com/photo/edit/*
 // @icon        https://www.google.com/s2/favicons?sz=64&domain=photohito.com
 // @grant        none
-// @updateURL        https://github.com/personwritep/PhotoHito_Checker/blob/main/PhotoHito_Checker.user.js
-// @downloadURL        https://github.com/personwritep/PhotoHito_Checker/blob/main/PhotoHito_Checker.user.js
+// @updateURL        https://github.com/personwritep/PhotoHito_Checker/raw/main/PhotoHito_Checker.user.js
+// @downloadURL        https://github.com/personwritep/PhotoHito_Checker/raw/main/PhotoHito_Checker.user.js
 // ==/UserScript==
 
 
