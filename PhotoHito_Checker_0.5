@@ -1,0 +1,162 @@
+// ==UserScript==
+// @name        PhotoHito Checker
+// @namespace        http://tampermonkey.net/
+// @version        0.5
+// @description        写真投稿サイトPHOTOHITOのレンズ種チェック
+// @author        PHOTOHITO User
+// @match        https://photohito.com/photo/*
+// @exclude        https://photohito.com/photo/edit/*
+// @icon        https://www.google.com/s2/favicons?sz=64&domain=photohito.com
+// @grant        none
+// @updateURL        https://github.com/personwritep/PhotoHito_Checker/raw/main/PhotoHito_Checker.user.js
+// @downloadURL        https://github.com/personwritep/PhotoHito_Checker/raw/main/PhotoHito_Checker.user.js
+// ==/UserScript==
+
+
+let ua=0; // Chromeの場合のフラグ
+let agent=window.navigator.userAgent.toLowerCase();
+if(agent.indexOf('firefox') > -1){ ua=1; } // Firefoxの場合のフラグ
+
+
+let path=location.pathname;
+if(path.match(/\/photo\/\d{1,8}\/$/)){ //「ユーザー別写真リスト」の画面
+
+    let focal_l; // EXIFの焦点距離
+
+    alert_env();
+
+
+    let check_set=document.querySelector('#check_set');
+    if(get_cookie('PHC')==0){
+        document.cookie='PHC=25; path=/; Max-Age=86400'; } // 24h 🔵
+    else{
+        check_set.value=get_cookie('PHC'); // Cookieの読込み 🔵
+
+
+        let exif=document.querySelector('#exif_area table');
+        if(exif){
+            let trs=exif.querySelectorAll('tr');
+            let k;
+            for(k=0; k<trs.length; k++){
+                if(trs[k].textContent.includes('焦点距離')){
+                    focal_l=trs[k].querySelector('td').textContent.match(/\d+/);
+                    break; }}
+
+            let alert_box=document.querySelector('#alert_box');
+            if(alert_box){
+                alert_box.textContent=
+                    trs[k].querySelector('td').textContent +'　'+
+                    trs[k-1].querySelector('td').textContent; }}
+
+
+        let input_wrap=document.querySelector('.input_wrap');
+        if(check_set && input_wrap){
+            if(focal_l==check_set.value){
+                input_wrap.style.color='#000';
+                input_wrap.style.background='#fff'; }
+            else{
+                input_wrap.style.color='#fff';
+                input_wrap.style.background='red'; }
+
+
+            check_set.onchange=function(event){
+                event.preventDefault();
+                document.cookie='PHC='+ check_set.value +'; path=/; Max-Age=86400'; // 24h 🔵
+
+                if(focal_l==check_set.value){
+                    input_wrap.style.color='#000';
+                    input_wrap.style.background='#fff'; }
+                else{
+                    input_wrap.style.color='#fff';
+                    input_wrap.style.background='red'; }}}
+
+    } //  else{}
+
+
+
+    function alert_env(){
+        let SVG_h=
+            '<svg id="phc_h" height="24" width="24"  viewBox="0 0 220 210">'+
+            '<path d="M89 22C71 25 54 33 41 46C7 81 11 142 50 171C58 177 68 182 78 '+
+            '185C90 188 103 189 115 187C126 185 137 181 146 175C155 169 163 162 169 '+
+            '153C190 123 189 80 166 52C147 30 118 18 89 22z" style="fill: #78909c;"></path>'+
+            '<path d="M67 77C73 75 78 72 84 70C94 66 114 67 109 83C106 91 98 95 93 '+
+            '101C86 109 83 116 83 126L111 126C112 114 122 108 129 100C137 90 141 76 '+
+            '135 64C127 45 101 45 84 48C80 49 71 50 68 54C67 56 67 59 67 61L67 77M85 '+
+            '143L85 166L110 166L110 143L85 143z" style="fill:#fff;"></path></svg>';
+
+        let abox=
+            '<div id="abox">'+
+            '<div class="input_wrap">'+
+            '<span class="label_text">'+ SVG_h +
+            'この設定が Exifと不一致なら赤表示</span>'+
+            '<input id="check_set" type="number" min="0" value="0">'+
+            '<span class="mm">mm</span>'+
+            '</div>'+
+            '<span id="alert_box"></span>'+
+            '</div>'+
+            '<style>'+
+            '#abox { position: absolute; top: 5px; right: 250px; z-index: 4000; '+
+            'font: bold 16px Meiryo; display: flex; align-items: center; } '+
+            '#abox.active { position: fixed; top: 5px; right: 20px; } '+
+            '.input_wrap { position: relative; margin-right: 15px; background: #fff; } '+
+            '.label_text { position: absolute; top: 7px; left: 6px; font: normal 12px Meiryo; '+
+            'color: inherit; display: none; } '+
+            '.input_wrap:hover .label_text { display: inline; } '+
+            '#phc_h { margin: -7px 0; width: 24px; cursor: pointer; } '+
+            '#check_set { width: 54px; height: 26px; padding: 2px 24px 0 0; text-align: center; '+
+            'font: inherit; -moz-appearance: textfield; '+
+            'border: 1px solid #767676; color: inherit; background: transparent; } '+
+            '.input_wrap:hover #check_set { padding: 2px 24px 0 224px; } '+
+            '#check_set::-webkit-inner-spin-button { margin-top: 1px; height: 20px; } '+
+            '#check_set:hover { -moz-appearance: unset; } '+
+            '.mm { position: absolute; right: 11px; top: 4px; font-size: 16px; color: inherit; } '+
+            '#abox:hover .mm { z-index: -1; } '+
+            '#abox:focus-within .mm { z-index: -1; } '+
+            '#alert_box { display: inline-block; padding: 3px 12px 1px; '+
+            'border: 1px solid #767676; color: #000; background: #fff; }'+
+            '</style>';
+
+        if(!document.querySelector('#abox')){
+            let login_menu=document.querySelector('#login_menu');
+            if(login_menu){
+                login_menu.insertAdjacentHTML('beforebegin', abox);
+                if(ua==1){
+                    let style='<style>#check_set { padding: 2px 24px 0 0; }</style>';
+                    login_menu.insertAdjacentHTML('beforebegin', style); }}}}
+
+
+
+    let target=document.documentElement;
+    let monitor=new MutationObserver(pos);
+    monitor.observe(target, {attributes: true}); // Lightbox表示の変更でエンハンス
+
+    function pos(){
+        let abox=document.querySelector('#abox')
+        if(target.style.overflow=='hidden'){
+            abox.classList.add('active'); }
+        else{
+            abox.classList.remove('active'); }}
+
+
+
+    function get_cookie(name){
+        let cookie_req=document.cookie.split('; ').find(row=>row.startsWith(name));
+        if(cookie_req){
+            if(cookie_req.split('=')[1]==null){
+                return 0; }
+            else{
+                return cookie_req.split('=')[1]; }}
+        if(!cookie_req){
+            return 0; }}
+
+
+
+    let help=document.querySelector('#phc_h');
+    if(help){
+        help.onclick=function(event){
+            event.stopImmediatePropagation();
+            let url='https://ameblo.jp/personwritep/entry-12874178847.html';
+            window.open(url, '_blank'); }}
+
+} //「ユーザー別写真リスト」の画面
