@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        PhotoHito Checker
 // @namespace        http://tampermonkey.net/
-// @version        0.4
+// @version        0.5
 // @description        写真投稿サイトPHOTOHITOのレンズ種チェック
 // @author        PHOTOHITO User
 // @match        https://photohito.com/photo/*
@@ -104,13 +104,13 @@ if(path.match(/\/photo\/\d{1,8}\/$/)){ //「ユーザー別写真リスト」の
             'color: inherit; display: none; } '+
             '.input_wrap:hover .label_text { display: inline; } '+
             '#phc_h { margin: -7px 0; width: 24px; cursor: pointer; } '+
-            '#check_set { width: 52px; height: 26px; padding: 2px 15px 0 0; text-align: center; '+
+            '#check_set { width: 54px; height: 26px; padding: 2px 24px 0 0; text-align: center; '+
             'font: inherit; -moz-appearance: textfield; '+
-            'border: 1px solid #767676; color: inherit; background: transparent; }'+
-            '.input_wrap:hover #check_set { padding: 2px 15px 0 224px; } '+
-            '#check_set::-webkit-inner-spin-button { margin-top: -1px; } '+
+            'border: 1px solid #767676; color: inherit; background: transparent; } '+
+            '.input_wrap:hover #check_set { padding: 2px 24px 0 224px; } '+
+            '#check_set::-webkit-inner-spin-button { margin-top: 1px; height: 20px; } '+
             '#check_set:hover { -moz-appearance: unset; } '+
-            '.mm { position: absolute; right: 5px; top: 6px; font-size: 14px; color: inherit; } '+
+            '.mm { position: absolute; right: 11px; top: 4px; font-size: 16px; color: inherit; } '+
             '#abox:hover .mm { z-index: -1; } '+
             '#abox:focus-within .mm { z-index: -1; } '+
             '#alert_box { display: inline-block; padding: 3px 12px 1px; '+
