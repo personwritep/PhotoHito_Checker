@@ -104,13 +104,13 @@ if(path.match(/\/photo\/\d{1,8}\/$/)){ //「ユーザー別写真リスト」の
             'color: inherit; display: none; } '+
             '.input_wrap:hover .label_text { display: inline; } '+
             '#phc_h { margin: -7px 0; width: 24px; cursor: pointer; } '+
-            '#check_set { width: 54px; height: 26px; padding: 2px 24px 0 0; text-align: center; '+
+            '#check_set { width: 60px; height: 26px; padding: 2px 24px 0 2px; text-align: center; '+
             'font: inherit; -moz-appearance: textfield; '+
             'border: 1px solid #767676; color: inherit; background: transparent; } '+
-            '.input_wrap:hover #check_set { padding: 2px 24px 0 224px; } '+
+            '.input_wrap:hover #check_set { padding: 2px 24px 0 228px; } '+
             '#check_set::-webkit-inner-spin-button { margin-top: 1px; height: 20px; } '+
             '#check_set:hover { -moz-appearance: unset; } '+
-            '.mm { position: absolute; right: 11px; top: 4px; font-size: 16px; color: inherit; } '+
+            '.mm { position: absolute; right: 12px; top: 4px; font-size: 16px; color: inherit; } '+
             '#abox:hover .mm { z-index: -1; } '+
             '#abox:focus-within .mm { z-index: -1; } '+
             '#alert_box { display: inline-block; padding: 3px 12px 1px; '+
@@ -122,7 +122,8 @@ if(path.match(/\/photo\/\d{1,8}\/$/)){ //「ユーザー別写真リスト」の
             if(login_menu){
                 login_menu.insertAdjacentHTML('beforebegin', abox);
                 if(ua==1){
-                    let style='<style>#check_set { padding: 2px 24px 0 0; }</style>';
+                    let style='<style>#check_set { padding: 2px 32px 0 0; } '+
+                        '.input_wrap:hover #check_set { padding: 2px 23px 0 232px; }</style>';
                     login_menu.insertAdjacentHTML('beforebegin', style); }}}}
 
 
