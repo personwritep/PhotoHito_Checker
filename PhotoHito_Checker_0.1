@@ -1,0 +1,91 @@
+// ==UserScript==
+// @name         PhotoHito Checker
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description 写真投稿サイトPHOTOHITOのレンズ種チェック
+// @author       PHOTOHITO User
+// @match        https://photohito.com/photo/*
+// @exclude      https://photohito.com/photo/edit/*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=photohito.com
+// @grant        none
+// ==/UserScript==
+
+
+
+let path=location.pathname;
+if(path.match(/\/photo\/\d{1,8}\/$/)){ //「ユーザー別写真リスト」の画面
+
+    let focal_l; // EXIFの焦点距離
+
+    alert_env();
+
+    let check_set=document.querySelector('#check_set');
+    if(get_cookie('PHC')!=0){
+        check_set.value=get_cookie('PHC'); } // Cookieの読込み 🔵
+
+
+
+    let exif=document.querySelector('#exif_area table');
+    if(exif){
+        let trs=exif.querySelectorAll('tr');
+        let k;
+        for(k=0; k<trs.length; k++){
+            if(trs[k].textContent.includes('焦点距離')){
+                focal_l=trs[k].querySelector('td').textContent.match(/\d+/);
+                break; }}
+
+
+        let alert_box=document.querySelector('#alert_box');
+        if(alert_box){
+            if(focal_l==check_set.value){
+                alert_box.style.opacity='0'; }
+            else{
+                alert_box.style.opacity='1';
+                alert_box.textContent=trs[k].querySelector('td').textContent; }}}
+
+
+
+    check_set.addEventListener('input', function(){
+        document.cookie='PHC='+ check_set.value +'; path=/; Max-Age=86400'; }); // 24h 🔵
+
+
+
+    function alert_env(){
+        let abox=
+            '<div id="abox">'+
+            '<input id="check_set" type="number" min="0" value="0">'+
+            '<span class="mm">mm</span>'+
+            '<span id="alert_box"></span>'+
+            '</div>'+
+            '<style>'+
+            '#abox { position: absolute; top: 5px; right: 250px; z-index: 2; '+
+            'font: bold 16px Meiryo; } '+
+            '#check_set { position: relative; width: 54px; padding: 2px 6px 0; margin: 0 15px; '+
+            'font: inherit; -moz-appearance: textfield; } '+
+            '#check_set::-webkit-inner-spin-button { margin-top: -1px; } '+
+            '#check_set:hover { -moz-appearance: unset; } '+
+            '.mm { position: absolute; left: 48px; top: 6px; font-size: 14px; } '+
+            '#abox:hover .mm { z-index: -1; } '+
+            '#abox:focus-within .mm { z-index: -1; } '+
+            '#alert_box { display: inline-block; vertical-align: middle; '+
+            'padding: 3px 12px 2px; color: #fff; background: red; }'+
+            '</style>';
+
+        if(!document.querySelector('#abox')){
+            let login_menu=document.querySelector('#login_menu');
+            if(login_menu){
+                login_menu.insertAdjacentHTML('beforebegin', abox); }}}
+
+
+
+    function get_cookie(name){
+        let cookie_req=document.cookie.split('; ').find(row=>row.startsWith(name));
+        if(cookie_req){
+            if(cookie_req.split('=')[1]==null){
+                return 0; }
+            else{
+                return cookie_req.split('=')[1]; }}
+        if(!cookie_req){
+            return 0; }}
+
+} //「ユーザー別写真リスト」の画面
